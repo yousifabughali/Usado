@@ -109,8 +109,44 @@ class FireStoreProvider extends ChangeNotifier {
         productPriceController.text='';
         productUsedTimeController.text='';
         productColorController.text='';
-
-        AppRouter.popRouter();
+        CustomDialog.showDialogFunction(
+            '',
+            Container(
+              height: 160.h,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/check.svg',height: 50.h,width: 50.w,),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    Text(
+                      'تم إرسال طلبك للمراجعة ينجاح',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    Text(
+                      'سيتم الموافقة على طلبك في غضون ساعة',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ));
+        Future.delayed(Duration(seconds: 3),() => AppRouter.popRouter(),);
       }
     }
   }
@@ -165,7 +201,6 @@ class FireStoreProvider extends ChangeNotifier {
                      height: 2.h,
                    ),
                    Text(
-
                      'سيتم إرسال تفاصيل عمليه الاستلام على البريد الالكتروني',
                      textAlign: TextAlign.center,
                      style: TextStyle(
