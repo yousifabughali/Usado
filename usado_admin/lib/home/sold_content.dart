@@ -20,7 +20,6 @@ class _SoldContentState extends State<SoldContent> {
       builder: (context,provider,child) {
         return SafeArea(
           child: Column(
-
             children: [
               Container(
                 height: 85.h,

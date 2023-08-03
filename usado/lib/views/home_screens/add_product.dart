@@ -11,7 +11,6 @@ import 'package:usado/provider/auth_provider.dart';
 import 'package:usado/provider/firestore_provider.dart';
 
 class AddProduct extends StatefulWidget {
-
   AddProduct({Key? key}) : super(key: key);
 
   @override
@@ -22,8 +21,16 @@ enum TypeOfProcess { sell, bid }
 
 class _AddProductState extends State<AddProduct> {
   TypeOfProcess? selected = TypeOfProcess.sell;
-  String? selectedCategory;
-  String selectedColor='أسود';
+   String? selectedCategory;
+  String selectedColor = 'أسود';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    selectedCategory= context.read<FireStoreProvider>().categoriesName.first;
+    context.read<FireStoreProvider>().addProduct=true;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,21 +54,19 @@ class _AddProductState extends State<AddProduct> {
             ),
             actions: [
               TextButton(
-                onPressed: provider.addProduct ? () async {
-                  setState(() {
-                    provider.addProduct=false;
-                  });
-
-                  await provider.addNewProductToRequested(
-                      selectedCategory!,
-                      selected.toString(),
-                      provider2.nameController.text,
-                      provider2.userImage ?? '',
-                      provider2.phoneController.text);
-                  setState(() {
-                    provider.addProduct=true;
-                  });
-                } : null,
+                onPressed: provider.addProduct
+                    ? () async {
+                        setState(() {
+                          provider.addProduct = false;
+                        });
+                        await provider.addNewProductToRequested(
+                            selectedCategory!,
+                            selected.toString(),
+                            provider2.nameController.text,
+                            provider2.userImage ?? '',
+                            provider2.phoneController.text);
+                      }
+                    : null,
                 child: Text(
                   'إضافة',
                   style: TextStyle(
@@ -98,10 +103,11 @@ class _AddProductState extends State<AddProduct> {
                     InkWell(
                       onTap: () async {
                         await provider.selectImage();
+                        provider.value='';
                       },
                       child: provider.selectedImage == null
                           ? Center(
-                            child: Container(
+                              child: Container(
                                 height: 80.h,
                                 width: 80.h,
                                 decoration: const BoxDecoration(
@@ -115,9 +121,9 @@ class _AddProductState extends State<AddProduct> {
                                   ),
                                 ),
                               ),
-                          )
+                            )
                           : Center(
-                            child: Container(
+                              child: Container(
                                 height: 80.h,
                                 width: 80.h,
                                 clipBehavior: Clip.antiAlias,
@@ -132,12 +138,25 @@ class _AddProductState extends State<AddProduct> {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                          ),
+                            ),
+                    ),
+                    Text(
+                      provider.value??'',
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500),
                     ),
                     SizedBox(
                       height: 20.h,
                     ),
-                    Text('اختر الفئة',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
+                    Text(
+                      'اختر الفئة',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.sp),
+                    ),
                     SizedBox(
                       height: 10.h,
                     ),
@@ -172,7 +191,13 @@ class _AddProductState extends State<AddProduct> {
                     SizedBox(
                       height: 20.h,
                     ),
-                    Text('أضف اسم المنتج',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
+                    Text(
+                      'أضف اسم المنتج',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.sp),
+                    ),
                     SizedBox(
                       height: 10.h,
                     ),
@@ -197,7 +222,13 @@ class _AddProductState extends State<AddProduct> {
                     SizedBox(
                       height: 20.h,
                     ),
-                    Text('مدة استخدام المنتج',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
+                    Text(
+                      'مدة استخدام المنتج',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.sp),
+                    ),
                     SizedBox(
                       height: 10.h,
                     ),
@@ -222,8 +253,13 @@ class _AddProductState extends State<AddProduct> {
                     SizedBox(
                       height: 20.h,
                     ),
-
-                    Text('اختر لون المنتج',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
+                    Text(
+                      'اختر لون المنتج',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.sp),
+                    ),
                     SizedBox(
                       height: 10.h,
                     ),
@@ -237,14 +273,13 @@ class _AddProductState extends State<AddProduct> {
                         child: DropdownButton<String>(
                           isExpanded: true,
                           padding: EdgeInsets.only(right: 20.w),
-
                           elevation: 0,
                           underline: Container(),
                           value: selectedColor,
                           onChanged: (newValue) {
                             setState(() {
                               selectedColor = newValue!;
-                              provider.productColorController.text=newValue!;
+                              provider.productColorController.text = newValue!;
                             });
                           },
                           items: provider.colors.map((e) {
@@ -260,72 +295,91 @@ class _AddProductState extends State<AddProduct> {
                     SizedBox(
                       height: 20.h,
                     ),
-                    Text('نوع المنتج',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
+                    Text(
+                      'نوع المنتج',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.sp),
+                    ),
                     SizedBox(
                       height: 10.h,
                     ),
                     Row(
                       children: [
                         InkWell(
-                          onTap: (){
+                          onTap: () {
                             setState(() {
-                              selected= TypeOfProcess.sell;
+                              selected = TypeOfProcess.sell;
                             });
-
                           },
                           child: Container(
                             width: 50.w,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(color: selected==TypeOfProcess.sell? const Color.fromRGBO(124, 144, 112, 1):Colors.grey,width: 4.w),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'بيع',
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color.fromRGBO(36, 36, 36, 1),
-                                  ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                  color: selected == TypeOfProcess.sell
+                                      ? const Color.fromRGBO(124, 144, 112, 1)
+                                      : Colors.grey,
+                                  width: 4.w),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'بيع',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color.fromRGBO(36, 36, 36, 1),
                                 ),
                               ),
                             ),
+                          ),
                         ),
-                         SizedBox(
-                           width: 20.w,
-                         ),
-                         InkWell(
-                           onTap: (){
-                             setState(() {
-                               selected= TypeOfProcess.bid;
-                             });
-
-                           },
-                           child: Container(
-                             width: 70.w,
-                             decoration: BoxDecoration(
+                        SizedBox(
+                          width: 20.w,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              selected = TypeOfProcess.bid;
+                            });
+                          },
+                          child: Container(
+                            width: 70.w,
+                            decoration: BoxDecoration(
                                 color: Colors.white,
-                                border: Border.all(color: selected==TypeOfProcess.bid? Color.fromRGBO(124, 144, 112, 1):Colors.grey,width: 4.w)
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'مزايدة',
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'Poppins',
-                                    color: const Color.fromRGBO(36, 36, 36, 1),
-                                  ),
+                                border: Border.all(
+                                    color: selected == TypeOfProcess.bid
+                                        ? Color.fromRGBO(124, 144, 112, 1)
+                                        : Colors.grey,
+                                    width: 4.w)),
+                            child: Center(
+                              child: Text(
+                                'مزايدة',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Poppins',
+                                  color: const Color.fromRGBO(36, 36, 36, 1),
                                 ),
                               ),
                             ),
-                         ),
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(
                       height: 20.h,
                     ),
-                    Text(selected==TypeOfProcess.sell?'أضف سعر المنتج':'يبدأ سعر المزايدة من:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
+                    Text(
+                      selected == TypeOfProcess.sell
+                          ? 'أضف سعر المنتج'
+                          : 'يبدأ سعر المزايدة من:',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.sp),
+                    ),
                     SizedBox(
                       height: 10.h,
                     ),
@@ -348,7 +402,6 @@ class _AddProductState extends State<AddProduct> {
                         ),
                       ),
                     ),
-
                   ],
                 ),
               ),

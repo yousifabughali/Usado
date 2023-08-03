@@ -44,7 +44,7 @@ class FireStoreProvider extends ChangeNotifier {
   List<Product> sold = [];
   List<Comments> bids=[];
   List<String> colors = ['أسود','أبيض','رمادي','أزرق','أحمر','برتقالي','أصفر','أخضر','زهري','بنفسجي','بني'];
-
+  String? value;
 
 
   FireStoreProvider() {
@@ -58,8 +58,8 @@ class FireStoreProvider extends ChangeNotifier {
   }
 
   String? requiredValidator(String? v) {
-    if (v!.isEmpty) {
-      return 'This field is required';
+    if (v!.isEmpty || v==null) {
+      return 'هذا الحقل مطلوب';
     }
   }
 
@@ -109,6 +109,7 @@ class FireStoreProvider extends ChangeNotifier {
         productPriceController.text='';
         productUsedTimeController.text='';
         productColorController.text='';
+        value='';
         CustomDialog.showDialogFunction(
             '',
             Container(
@@ -148,6 +149,14 @@ class FireStoreProvider extends ChangeNotifier {
             ));
         Future.delayed(Duration(seconds: 3),() => AppRouter.popRouter(),);
       }
+      else{
+        value = 'يرجى اضافة صورة';
+      }
+    }else{
+      if(selectedImage==null) {
+        value = 'يرجى اضافة صورة';
+      }
+      addProduct=true;
     }
   }
 

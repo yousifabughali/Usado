@@ -18,7 +18,14 @@ enum TypeOfProcess { sell, bid }
 
 class _AddProductState extends State<AddProduct> {
   TypeOfProcess? selected=TypeOfProcess.sell;
+  String? selectedCategory;
+  String selectedColor='أسود';
 
+  @override
+  void initState() {
+    selectedCategory = context.read<FireStoreProvider>().categoriesName.first;
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Consumer<FireStoreProvider>(
@@ -41,9 +48,19 @@ class _AddProductState extends State<AddProduct> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () async{
-                    await provider.addNewProduct(widget.category,selected.toString());
-                  },
+                  onPressed: provider.addProduct ? () async {
+                    setState(() {
+                      provider.addProduct=false;
+                    });
+
+                    await provider.addNewProduct(
+                        selectedCategory!,
+                        selected.toString(),
+                    );
+                    setState(() {
+                      provider.addProduct=true;
+                    });
+                  } : null,
                   child: Text(
                     'إضافة',
                     style: TextStyle(
@@ -59,17 +76,19 @@ class _AddProductState extends State<AddProduct> {
               key: provider.addNewProductKey,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding:  EdgeInsets.symmetric(horizontal: 12.w,vertical: 20.h),
+                  padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 20.h),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'أضف صورة للمنتج',
-                        style: TextStyle(
-                          color: Color.fromRGBO(36, 36, 36, 0.5),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.sp,
+                      Center(
+                        child: Text(
+                          'أضف صورة للمنتج',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18.sp,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -78,53 +97,107 @@ class _AddProductState extends State<AddProduct> {
                       InkWell(
                         onTap: () async {
                           await provider.selectImage();
+                          provider.value='';
+
                         },
-                        child: provider.selectedImage==null
-                            ? Container(
-                                height: 120.h,
-                                width: 120.h,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color.fromRGBO(217, 217, 217, 0.2),
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    'assets/icons/addPhoto.svg',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                height: 120.h,
-                                width: 120.h,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color.fromRGBO(217, 217, 217, 0.2),
-                                ),
-                                child: Image(
-                                  image: FileImage(
-                                    provider.selectedImage!,
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
+                        child: provider.selectedImage == null
+                            ? Center(
+                          child: Container(
+                            height: 80.h,
+                            width: 80.h,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromRGBO(217, 217, 217, 0.2),
+                            ),
+                            child: Center(
+                              child: SvgPicture.asset(
+                                'assets/icons/addPhoto.svg',
+                                fit: BoxFit.cover,
                               ),
+                            ),
+                          ),
+                        )
+                            : Center(
+                          child: Container(
+                            height: 80.h,
+                            width: 80.h,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromRGBO(217, 217, 217, 0.2),
+                            ),
+                            child: Image(
+                              image: FileImage(
+                                provider.selectedImage!,
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        provider.value??'',
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500),
                       ),
                       SizedBox(
                         height: 20.h,
                       ),
+                      Text('اختر الفئة',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
                       SizedBox(
+                        height: 10.h,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                        child: SizedBox(
+                          width: 335.w,
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            elevation: 0,
+                            padding: EdgeInsets.only(right: 20.w),
+                            value: selectedCategory,
+                            underline: Container(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedCategory = newValue;
+                              });
+                            },
+                            items: provider.categoriesName.map((e) {
+                              return DropdownMenuItem<String>(
+                                alignment: Alignment.centerRight,
+                                value: e,
+                                child: Text(e),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Text('أضف اسم المنتج',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Container(
                         width: 335.w,
+                        height: 80.h,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
                         child: TextFormField(
                           controller: provider.productNameController,
                           validator: provider.requiredValidator,
                           decoration: InputDecoration(
-                            label: Text('اسم المنتج'),
-                            hintText: 'أضف اسم المنتج',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.r),
-                              borderSide:
-                                  BorderSide(style: BorderStyle.solid, width: 1.w),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
@@ -132,18 +205,24 @@ class _AddProductState extends State<AddProduct> {
                       SizedBox(
                         height: 20.h,
                       ),
+                      Text('مدة استخدام المنتج',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
                       SizedBox(
+                        height: 10.h,
+                      ),
+                      Container(
                         width: 335.w,
+                        height: 80.h,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
                         child: TextFormField(
                           controller: provider.productUsedTimeController,
                           validator: provider.requiredValidator,
                           decoration: InputDecoration(
-                            label: Text('مدة استخدام المنتج'),
-                            hintText: 'أضف مدة استخدام المنتج',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.r),
-                              borderSide:
-                                  BorderSide(style: BorderStyle.solid, width: 1.w),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
@@ -151,87 +230,133 @@ class _AddProductState extends State<AddProduct> {
                       SizedBox(
                         height: 20.h,
                       ),
-                      SizedBox(
-                        width: 335.w,
-                        child: TextFormField(
-                          controller: provider.productPriceController,
-                          validator: provider.requiredValidator,
-                          decoration: InputDecoration(
-                            label: Text('سعر المنتج'),
-                            hintText: 'أضف سعر المنتج',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                              borderSide:
-                                  BorderSide(style: BorderStyle.solid, width: 1.w),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      SizedBox(
-                        width: 335.w,
-                        child: TextFormField(
-                          controller: provider.productColorController,
-                          validator: provider.requiredValidator,
-                          decoration: InputDecoration(
-                            label: Text('لون المنتج'),
-                            hintText: 'أضف لون المنتج',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                              borderSide:
-                                  BorderSide(style: BorderStyle.solid, width: 1.w),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      ListView(
-                        shrinkWrap: true,
 
-                        children: [
-                          RadioListTile<TypeOfProcess>(
-                            title: Text(
-                              'بيع',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                color: const Color.fromRGBO(36, 36, 36, 1),
-                              ),
-                            ),
-                            value: TypeOfProcess.sell,
-                            groupValue: selected,
-                            onChanged: (value) {
-                              setState(() {
-                                selected = value;
-                                // provider.level = value.toString();
-                              });
-                            },
+                      Text('اختر لون المنتج',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      SizedBox(
+                        width: 325.w,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(15.r),
                           ),
-                          RadioListTile<TypeOfProcess>(
-                            title: Text(
-                              'مزايدة',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Poppins',
-                                color: const Color.fromRGBO(36, 36, 36, 1),
-                              ),
-                            ),
-                            value: TypeOfProcess.bid,
-                            groupValue: selected,
-                            onChanged: (value) {
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            padding: EdgeInsets.only(right: 20.w),
+
+                            elevation: 0,
+                            underline: Container(),
+                            value: selectedColor,
+                            onChanged: (newValue) {
                               setState(() {
-                                selected = value;
-                                // provider.level = value.toString();
+                                selectedColor = newValue!;
+                                provider.productColorController.text=newValue!;
                               });
                             },
+                            items: provider.colors.map((e) {
+                              return DropdownMenuItem<String>(
+                                alignment: Alignment.centerRight,
+                                value: e,
+                                child: Text(e),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Text('نوع المنتج',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: (){
+                              setState(() {
+                                selected= TypeOfProcess.sell;
+                              });
+
+                            },
+                            child: Container(
+                              width: 50.w,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: selected==TypeOfProcess.sell? const Color.fromRGBO(124, 144, 112, 1):Colors.grey,width: 4.w),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'بيع',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color.fromRGBO(36, 36, 36, 1),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20.w,
+                          ),
+                          InkWell(
+                            onTap: (){
+                              setState(() {
+                                selected= TypeOfProcess.bid;
+                              });
+
+                            },
+                            child: Container(
+                              width: 70.w,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: selected==TypeOfProcess.bid? Color.fromRGBO(124, 144, 112, 1):Colors.grey,width: 4.w)
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'مزايدة',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Poppins',
+                                    color: const Color.fromRGBO(36, 36, 36, 1),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Text(selected==TypeOfProcess.sell?'أضف سعر المنتج':'يبدأ سعر المزايدة من:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 18.sp),),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Container(
+                        width: 335.w,
+                        height: 80.h,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                        child: TextFormField(
+                          controller: provider.productPriceController,
+                          validator: provider.requiredValidator,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ),
+
                     ],
                   ),
                 ),

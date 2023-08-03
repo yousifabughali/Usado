@@ -37,7 +37,7 @@ class _OrderSoldWidgetState extends State<OrderSoldWidget> {
                   CircleAvatar(
                     radius: 35.r,
                     backgroundColor: Colors.grey,
-                    backgroundImage: NetworkImage(widget.product.productHolderImage!),
+                    backgroundImage: NetworkImage(widget.product.productHolderImage??'https://backend.artreview.com/wp-content/uploads/2021/04/pakpixel.jpg'),
 
                   ),
                   SizedBox(
@@ -59,7 +59,7 @@ class _OrderSoldWidgetState extends State<OrderSoldWidget> {
                   CircleAvatar(
                     radius: 35.r,
                     backgroundColor: Colors.grey,
-                    backgroundImage: NetworkImage(widget.product.buyerImage!),
+                    backgroundImage: NetworkImage(widget.product.buyerImage??'https://backend.artreview.com/wp-content/uploads/2021/04/pakpixel.jpg'),
                   ),
                   SizedBox(
                     width: 15.w,

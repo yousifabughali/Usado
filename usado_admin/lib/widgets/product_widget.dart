@@ -48,7 +48,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                 ),
                 child: Image.network(
                   widget.product.image,
-                  height: 165.h,
+                  height: 140.h,
                   fit: BoxFit.cover,
                 ),
               ),

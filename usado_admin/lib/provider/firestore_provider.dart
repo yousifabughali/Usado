@@ -32,7 +32,11 @@ class FireStoreProvider extends ChangeNotifier {
   List<Product> requests = [];
   List<Product> soldProduct = [];
   List<Bids> bids = [];
+  List<String> categoriesName = [];
+  List<String> colors = ['أسود','أبيض','رمادي','أزرق','أحمر','برتقالي','أصفر','أخضر','زهري','بنفسجي','بني'];
 
+  String? value;
+  bool addProduct=true;
 
   FireStoreProvider() {
     getAllCategories();
@@ -66,6 +70,8 @@ class FireStoreProvider extends ChangeNotifier {
 
   getAllCategories() async {
     categories = await FireStoreHelper.fireStoreHelper.getAllCategories();
+    categoriesName= categories.map((e) => e.name).toList();
+
     notifyListeners();
   }
   getAllSold() async {
@@ -106,7 +112,7 @@ class FireStoreProvider extends ChangeNotifier {
   }
 
 
-  addNewProduct(Category category, String operation) async {
+  addNewProduct(String categoryName, String operation) async {
     if (addNewProductKey.currentState!.validate()) {
       if (selectedImage != null) {
         String imageUrl =
@@ -117,14 +123,14 @@ class FireStoreProvider extends ChangeNotifier {
           name: productNameController.text,
           price: num.parse(productPriceController.text),
           image: imageUrl,
-          categoryName: category.name,
+          categoryName: categoryName,
           location: 'غزة',
           productHolder: 'سحر زقوت',
           publishDate:
               DateFormat('yMd').format(DateTime.now()).toString(),
           usedTime: productUsedTimeController.text,
           operation: operation,
-          catId:category.id,
+          catId: categories.where((element) => element.name==categoryName).first.id,
         );
         Product newProduct = await FireStoreHelper.fireStoreHelper
             .addNewProduct(product);
@@ -133,7 +139,14 @@ class FireStoreProvider extends ChangeNotifier {
         print(products);
         notifyListeners();
         AppRouter.popRouter();
+      } else{
+        value = 'يرجى اضافة صورة';
       }
+    }else{
+      if(selectedImage==null) {
+        value = 'يرجى اضافة صورة';
+      }
+      addProduct=true;
     }
   }
 
