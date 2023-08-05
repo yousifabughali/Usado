@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1040168400250",
-    "project_id": "usedo-graduation",
-    "storage_bucket": "usedo-graduation.appspot.com"
+    "project_number": "605594457931",
+    "project_id": "usado-1a7bd",
+    "storage_bucket": "usado-1a7bd.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1040168400250:android:864879d2e13e85fe4d92c3",
+        "mobilesdk_app_id": "1:605594457931:android:8f1d2b678a3dc70b55bace",
         "android_client_info": {
           "package_name": "com.example.usado"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1040168400250-876l3dl5fcearndap9ior17iqnukofrc.apps.googleusercontent.com",
+          "client_id": "605594457931-meso97bgc6st8bk2rn3bkvpdeamj7414.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC3ooZb1H7DI8BnzbvjYpF69e5xdV4ljSU"
+          "current_key": "AIzaSyCJy11dykhDq1R65w9hFw_60PRuULEJDas"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1040168400250-876l3dl5fcearndap9ior17iqnukofrc.apps.googleusercontent.com",
+              "client_id": "605594457931-meso97bgc6st8bk2rn3bkvpdeamj7414.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

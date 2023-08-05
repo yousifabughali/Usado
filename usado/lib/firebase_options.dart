@@ -50,20 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC3ooZb1H7DI8BnzbvjYpF69e5xdV4ljSU',
-    appId: '1:1040168400250:android:864879d2e13e85fe4d92c3',
-    messagingSenderId: '1040168400250',
-    projectId: 'usedo-graduation',
-    storageBucket: 'usedo-graduation.appspot.com',
+    apiKey: 'AIzaSyCJy11dykhDq1R65w9hFw_60PRuULEJDas',
+    appId: '1:605594457931:android:8f1d2b678a3dc70b55bace',
+    messagingSenderId: '605594457931',
+    projectId: 'usado-1a7bd',
+    storageBucket: 'usado-1a7bd.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDnwynw4vhOxBSWQhg_xoQRk47udyG28Mo',
-    appId: '1:1040168400250:ios:540d8ee49a2b5fca4d92c3',
-    messagingSenderId: '1040168400250',
-    projectId: 'usedo-graduation',
-    storageBucket: 'usedo-graduation.appspot.com',
-    iosClientId: '1040168400250-7ut9u4mn7b8b0klics5o5kpmci1l1gug.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAUvm9LdzbSt1ePuOG1y5ZUP0y8sE3FEIw',
+    appId: '1:605594457931:ios:47918b5942d4d1e155bace',
+    messagingSenderId: '605594457931',
+    projectId: 'usado-1a7bd',
+    storageBucket: 'usado-1a7bd.appspot.com',
+    iosClientId: '605594457931-s8cocdnasl159bi75beip82pmo1jo6b2.apps.googleusercontent.com',
     iosBundleId: 'com.example.usado',
   );
 }
